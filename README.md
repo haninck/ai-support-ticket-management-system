@@ -54,7 +54,7 @@ AI Support Ticket Management System is a web-based application that helps organi
 
 ### Machine Learning
 
-* CountVectorizer
+* TF-IDF
 * Multinomial Naive Bayes
 
 ## Workflow
