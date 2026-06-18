@@ -1,0 +1,385 @@
+#-------------------------------   OLD NINJA FILES----------------------------------------------#
+
+@app.route("/")
+def home():
+
+    return render_template("customer.html")
+
+@app.route("/submit_ticket", methods=["POST"])
+def submit_ticket():
+    
+    from datetime import datetime
+    date_of_creation = datetime.now().strftime(
+    "%d-%m-%Y %H:%M"
+    ) 
+        
+    ticket = request.form["ticket"]
+
+    transformed = vectorizer.transform([ticket])
+
+    prediction = model.predict(transformed)
+
+    response = get_response(prediction[0])
+
+    probabilities = model.predict_proba(transformed)
+
+    categories = model.classes_
+
+    results = []
+
+    for category, prob in zip(categories, probabilities[0]):
+
+        results.append({
+            "category": category,
+            "percentage": round(prob * 100, 2)
+        })
+
+    results = sorted(
+        results,
+        key=lambda x: x["percentage"],
+        reverse=True
+    )
+    probabilities_json = json.dumps(results)
+    
+    confidence = round(
+        max(probabilities[0]) * 100,
+        2
+    )
+
+    priority = get_priority(ticket)
+
+    # Save ticket to database
+    conn = sqlite3.connect("tickets.db")
+
+    cursor = conn.cursor()
+    cursor.execute(
+        """
+        INSERT INTO tickets (
+            ticket_text,
+            category,
+            confidence,
+            priority,
+            status,
+            probabilities,
+            date_of_creation
+        ) VALUES (?, ?, ?, ?, ?, ?, ?)
+        """,
+        (
+            ticket,
+            prediction[0],
+            confidence,
+            priority,
+            "Open",
+            probabilities_json,
+            date_of_creation
+        )
+    )
+    conn.commit()
+
+    ticket_id = cursor.lastrowid
+
+    conn.close()
+
+    return render_template(
+    "customer.html",
+    success=True,
+    ticket_id=ticket_id,
+    response=response
+)
+
+@app.route("/check_status", methods=["POST"])
+def check_status():
+
+    ticket_id = request.form["ticket_id"]
+
+    conn = sqlite3.connect("tickets.db")
+
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "SELECT * FROM tickets WHERE id=?",
+        (ticket_id,)
+    )
+
+    status_result = cursor.fetchone()
+
+    conn.close()
+
+    return render_template(
+        "customer.html",
+        status_result=status_result
+    )
+
+@app.route("/dashboard")
+def dashboard():
+
+    conn = sqlite3.connect("tickets.db")
+
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "SELECT * FROM tickets ORDER BY id DESC LIMIT 5"
+    )
+
+    tickets = cursor.fetchall()
+
+    # Statistics
+    cursor.execute(
+        "SELECT COUNT(*) FROM tickets"
+    )
+    total_tickets = cursor.fetchone()[0]
+
+    cursor.execute(
+        "SELECT COUNT(*) FROM tickets WHERE status='Open'"
+    )
+    open_count = cursor.fetchone()[0]
+
+    cursor.execute(
+        "SELECT COUNT(*) FROM tickets WHERE status='In Progress'"
+    )
+    progress_count = cursor.fetchone()[0]
+
+    cursor.execute(
+        "SELECT COUNT(*) FROM tickets WHERE status='Resolved'"
+    )
+    resolved_count = cursor.fetchone()[0]
+
+    cursor.execute(
+        "SELECT COUNT(*) FROM tickets WHERE status='Closed'"
+    )
+    closed_count = cursor.fetchone()[0]
+
+    conn.close()
+
+    latest_ticket = None
+    results = []
+
+    if tickets:
+
+        latest = tickets[0]
+
+        latest_ticket = {
+            "id": latest[0],
+            "ticket": latest[1],
+            "category": latest[2],
+            "confidence": latest[3],
+            "priority": latest[4],
+            "status": latest[5],
+            "response": get_response(latest[2])
+        }
+
+        results = json.loads(latest[6])
+
+    return render_template(
+        "dashboard.html",
+        tickets=tickets,
+        results=results,
+        latest_ticket=latest_ticket,
+        total_tickets=total_tickets,
+        open_count=open_count,
+        progress_count=progress_count,
+        resolved_count=resolved_count,
+        closed_count=closed_count
+    )
+    
+@app.route("/tickets")
+def view_tickets():
+
+    conn = sqlite3.connect("tickets.db")
+
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "SELECT * FROM tickets ORDER BY id DESC"
+    )
+
+    tickets = cursor.fetchall()
+
+    conn.close()
+    return render_template(
+        "tickets.html",
+        tickets=tickets
+    )
+
+@app.route("/update_status", methods=["POST"])
+def update_status():
+
+    ticket_id = request.form["ticket_id"]
+
+    status = request.form["status"]
+
+    source = request.form["source"]
+
+    conn = sqlite3.connect("tickets.db")
+
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        UPDATE tickets
+        SET status=?
+        WHERE id=?
+        """,
+        (status, ticket_id)
+    )
+
+    conn.commit()
+
+    conn.close()
+    if source == "tickets":
+        return redirect("/tickets")
+    
+    return redirect("/dashboard")
+      
+@app.route("/search_ticket", methods=["POST"])
+def search_tickets():
+
+    search = request.form["search"]
+
+    conn = sqlite3.connect("tickets.db")
+
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        SELECT * FROM tickets
+        WHERE
+            CAST(id AS TEXT) LIKE ?
+            OR category LIKE ?
+            OR priority LIKE ?
+            OR status LIKE ?
+        """,
+        (
+            f"%{search}%",
+            f"%{search}%",
+            f"%{search}%",
+            f"%{search}%"
+        )
+    )
+
+    tickets = cursor.fetchall()
+
+    conn.close()
+
+    return render_template(
+        "tickets.html",
+        tickets=tickets
+    )
+    
+@app.route("/ticket/<int:ticket_id>")
+def ticket_details(ticket_id):
+
+    conn = sqlite3.connect("tickets.db")
+
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "SELECT * FROM tickets WHERE id=?",
+        (ticket_id,)
+    )
+    ticket = cursor.fetchone()
+    results = json.loads(ticket[6])
+    conn.close()
+
+    return render_template(
+    "ticket_details.html",
+    ticket=ticket,
+    results=results
+)
+@app.route("/update_note", methods=["POST"])
+def update_note():
+
+    ticket_id = request.form["ticket_id"]
+
+    note = request.form["note"]
+
+    conn = sqlite3.connect("tickets.db")
+
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        UPDATE tickets
+        SET notes = ?
+        WHERE id = ?
+        """,
+        (note, ticket_id)
+    )
+
+    conn.commit()
+
+    conn.close()
+
+    return redirect(f"/ticket/{ticket_id}")
+
+@app.route("/filter/<status>")
+def filter_tickets(status):
+
+    conn = sqlite3.connect("tickets.db")
+
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "SELECT * FROM tickets WHERE status=? ORDER BY id DESC",
+        (status,)
+    )
+
+    tickets = cursor.fetchall()
+
+    conn.close()
+
+    return render_template(
+        "tickets.html",
+        tickets=tickets
+    )      
+@app.route("/add_to_dataset", methods=["POST"])
+def add_to_dataset():
+
+    ticket_id = request.form["ticket_id"]
+
+    conn = sqlite3.connect("tickets.db")
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "SELECT * FROM tickets WHERE id=?",
+        (ticket_id,)
+    )
+
+    ticket = cursor.fetchone()
+
+    if ticket[10] == "Yes":
+
+        conn.close()
+
+        return redirect(f"/ticket/{ticket_id}")
+
+    with open(
+        "ticket.csv",
+        "a",
+        newline="",
+        encoding="utf-8"
+    ) as file:
+
+        writer = csv.writer(file)
+
+        writer.writerow(
+            [
+                ticket[1],  # ticket_text
+                ticket[2]   # category
+            ]
+        )
+
+    cursor.execute(
+        """
+        UPDATE tickets
+        SET added_to_dataset='Yes'
+        WHERE id=?
+        """,
+        (ticket_id,)
+    )
+
+    conn.commit()
+
+    conn.close()
+
+    return redirect("/tickets" )   

@@ -1,0 +1,426 @@
+Ticket,Category,Priority
+Unable to login,Authentication,Medium
+Forgot password,Authentication,Low
+Password reset not working,Authentication,Medium
+How to reset password,Authentication,Low
+Login issues,Authentication,Medium
+Error in login,Authentication,Medium
+Two factor authentication failed,Authentication,High
+Cannot verify my account,Authentication,Medium
+Authentication error occurred,Authentication,High
+Login page not responding,Authentication,High
+
+Payment failed,Payment,Medium
+Money deducted but order not placed,Payment,High
+Refund not received,Payment,Low
+I want refund,Payment,Low
+Payment gateway error,Payment,High
+Double payment deducted,Payment,High
+Transaction failed,Payment,Medium
+Unable to complete payment,Payment,Medium
+Charged twice for order,Payment,High
+Payment processing error,Payment,Medium
+
+Application crashes,Technical,High
+Website loading slowly,Technical,Medium
+Error while uploading file,Technical,Medium
+App is crashing,Technical,High
+Server down,Technical,High
+Website down,Technical,High
+System failure detected,Technical,High
+Database connection error,Technical,High
+Page not loading,Technical,Medium
+Unexpected application error,Technical,Medium
+
+Cannot update profile,Account,Medium
+Need to change email,Account,Low
+Account settings not saving,Account,Medium
+I want to delete my account,Account,Low
+I want to make a new user,Account,Low
+I cant access my account,Account,High
+Profile update failed,Account,Medium
+Account locked,Account,High
+Unable to change password,Account,Medium
+Account verification pending,Account,Low
+
+How to use the app,General,Low
+Need help with settings,General,Low
+Where can I find reports,General,Low
+Help me understand dashboard,General,Low
+How do I export data,General,Low
+Need user guide,General,Low
+Where are notifications located,General,Low
+Can you explain the features,General,Medium
+How to change preferences,General,Low
+Need assistance navigating app,General,Medium
+
+Unable to authenticate using mobile number,Authentication,Medium
+One-time password not accepted,Authentication,Medium
+Sign in attempt blocked,Authentication,High
+Authentication token expired,Authentication,Medium
+Unable to verify login credentials,Authentication,High
+Biometric login not functioning,Authentication,Medium
+Login verification keeps failing,Authentication,High
+Security challenge cannot be completed,Authentication,Medium
+User authentication service unavailable,Authentication,High
+Verification link has become invalid,Authentication,Medium
+
+Online payment remains pending,Payment,Medium
+Incorrect amount charged during checkout,Payment,High
+Unable to apply promotional discount,Payment,Low
+Payment receipt not generated,Payment,Medium
+Bank transaction completed but order missing,Payment,High
+Billing summary displays wrong charges,Payment,Medium
+Failed to process subscription renewal,Payment,High
+Unable to view payment history,Payment,Low
+Order cancelled after successful payment,Payment,High
+Installment payment option unavailable,Payment,Medium
+
+System maintenance page displayed unexpectedly,Technical,Medium
+Application hangs during startup,Technical,High
+Internal server error encountered,Technical,High
+Background services stopped working,Technical,High
+Unable to connect to application server,Technical,High
+Dashboard widgets not loading,Technical,Medium
+Broken link found on website,Technical,Low
+Scheduled tasks not executing,Technical,Medium
+System response time extremely slow,Technical,Medium
+Cloud service integration failed,Technical,High
+
+Unable to modify personal information,Account,Medium
+Request to transfer account ownership,Account,Low
+Account preferences reset automatically,Account,Medium
+User profile disappeared from dashboard,Account,High
+Cannot update communication preferences,Account,Low
+Membership status displayed incorrectly,Account,Medium
+Unable to connect external account,Account,Low
+Account data appears incomplete,Account,Medium
+Profile changes are not being saved,Account,Medium
+Request to reactivate closed account,Account,High
+
+Need clarification on available features,General,Low
+Where can I access user documentation,General,Low
+Question regarding service limitations,General,Low
+Looking for onboarding instructions,General,Low
+Need assistance understanding analytics,General,Medium
+How can I customize my dashboard,General,Low
+Request for platform overview,General,Low
+Need guidance on first-time setup,General,Medium
+Question about available integrations,General,Low
+Looking for best practices documentation,General,Low
+
+Authentication service temporarily unavailable,Authentication,High
+Unable to complete identity verification,Authentication,Medium
+Security token validation failed,Authentication,High
+Login approval request not received,Authentication,Medium
+User credentials rejected unexpectedly,Authentication,High
+Unable to authenticate through company account,Authentication,Medium
+Recovery code no longer valid,Authentication,Medium
+Device authorization failed,Authentication,High
+Trusted device not recognized,Authentication,Medium
+Authentication process stuck in loop,Authentication,High
+
+Pending transaction not appearing in account,Payment,Medium
+Digital receipt failed to generate,Payment,Low
+Subscription downgrade billing issue,Payment,Medium
+Prepaid balance not updated after payment,Payment,High
+Unexpected service charge applied,Payment,Medium
+Unable to validate payment information,Payment,Medium
+Checkout completed but invoice missing,Payment,Medium
+Partial refund amount received,Payment,High
+Recurring payment schedule incorrect,Payment,Medium
+Merchant transaction verification failed,Payment,High
+
+Container service failed to start,Technical,High
+Background job execution delayed,Technical,Medium
+Application logs not being generated,Technical,Medium
+Cache synchronization problem detected,Technical,High
+Service health check reporting failures,Technical,High
+Websocket connection terminated unexpectedly,Technical,Medium
+Task scheduler stopped processing jobs,Technical,High
+Monitoring alerts not triggering,Technical,Medium
+Message queue processing stalled,Technical,High
+System resources exhausted unexpectedly,Technical,High
+
+Unable to assign account administrator,Account,Medium
+Profile visibility settings not applied,Account,Low
+Account ownership information incorrect,Account,Medium
+User preferences disappeared after update,Account,Medium
+Cannot remove linked account,Account,Low
+Account role changes not taking effect,Account,Medium
+Duplicate account created accidentally,Account,Low
+Account summary information outdated,Account,Medium
+Unable to restore archived account,Account,High
+Profile configuration failed to update,Account,Medium
+
+Request for getting started guide,General,Low
+Need explanation of reporting features,General,Low
+Question about supported browsers,General,Low
+Looking for platform configuration guide,General,Low
+Need assistance understanding permissions,General,Medium
+How can I access training resources,General,Low
+Question regarding product roadmap,General,Low
+Need help locating configuration options,General,Medium
+Looking for deployment documentation,General,Low
+Request for feature comparison details,General,Low
+
+Role inheritance configuration issue,Account,Medium
+Access control policy not applied correctly,Account,Medium
+User delegation request pending approval,Account,Low
+Account hierarchy mapping incorrect,Account,Medium
+
+Request for workflow automation guide,General,Low
+Question regarding disaster recovery options,General,Low
+Need information about audit retention policy,General,Low
+Request for white-label customization details,General,Low
+How can I configure automated alerts,General,Low
+Need guidance on system monitoring features,General,Low
+
+Duplicate payment reference number generated,Payment,Medium
+Escrow payment authorization failed,Payment,High
+Installment billing schedule incorrect,Payment,Medium
+Merchant settlement amount mismatch,Payment,High
+Payment reconciliation report unavailable,Payment,Medium
+Corporate billing account not updating,Payment,Medium
+Foreign currency conversion amount incorrect,Payment,High
+Unable to validate tax exemption certificate,Payment,Medium
+
+Authentication prompt repeatedly displayed,Authentication,Medium
+Trusted session validation failed,Authentication,High
+Security challenge response rejected,Authentication,Medium
+Account verification workflow interrupted,Authentication,Medium
+
+Order confirmation email not generated,Payment,Low
+Subscription activation delayed after successful charge,Payment,High
+Payment authorization completed but service unavailable,Payment,High
+
+Profile ownership transfer awaiting approval,Account,Low
+User access review request pending,Account,Low
+
+Need documentation for backup procedures,General,Low
+Question regarding platform scalability limits,General,Low
+
+Session authentication interrupted during checkout,Authentication,Medium
+Identity verification required after transaction,Authentication,Medium
+
+cant login,Authentication,Medium
+login not working,Authentication,Medium
+otp not coming,Authentication,Medium
+password reset failed,Authentication,Medium
+verification failed,Authentication,Medium
+cant access account,Authentication,High
+login blocked,Authentication,High
+code not accepted,Authentication,Medium
+signin failed,Authentication,Medium
+account access problem,Authentication,High
+
+payment not working,Payment,Medium
+refund delayed,Payment,Medium
+money deducted,Payment,High
+invoice missing,Payment,Low
+payment error,Payment,Medium
+charged extra,Payment,High
+subscription payment issue,Payment,Medium
+cant pay online,Payment,Medium
+billing problem,Payment,Medium
+payment pending,Payment,Medium
+
+app crashed,Technical,High
+website slow,Technical,Medium
+server issue,Technical,High
+page not opening,Technical,Medium
+system error,Technical,High
+file upload failed,Technical,Medium
+download not working,Technical,Medium
+database issue,Technical,High
+service unavailable,Technical,High
+app freezing,Technical,High
+
+profile not updating,Account,Medium
+account locked,Account,High
+cant change email,Account,Medium
+wrong account details,Account,Medium
+user role issue,Account,Medium
+account disabled,Account,High
+need account update,Account,Low
+account sync problem,Account,Medium
+permission issue,Account,Medium
+cant edit profile,Account,Medium
+
+need help,General,Low
+how to use app,General,Low
+where is report,General,Low
+need user guide,General,Low
+feature question,General,Low
+setup help,General,Low
+dashboard help,General,Low
+api help,General,Low
+pricing question,General,Low
+documentation needed,General,Low
+
+login working in mobile but not in laptop,Authentication,Medium
+getting logged out automatically after few minutes,Authentication,Medium
+security question answer not accepting,Authentication,Medium
+account asking verification every time,Authentication,Medium
+old password still showing after reset,Authentication,Medium
+
+upi payment successful but order missing,Payment,High
+gst amount showing wrong in bill,Payment,Medium
+corporate invoice not generated,Payment,Medium
+payment option disappeared during checkout,Payment,Medium
+emi option not available for purchase,Payment,Low
+
+application stuck on loading screen,Technical,Medium
+screen turning white after login,Technical,High
+search results not displaying,Technical,Medium
+notification panel not opening,Technical,Medium
+attachment preview not working,Technical,Low
+
+account linked to wrong department,Account,Medium
+unable to remove secondary email,Account,Low
+account showing inactive status incorrectly,Account,Medium
+user designation not updated in profile,Account,Low
+old profile picture still visible,Account,Low
+
+need sample report format,General,Low
+where can i find release notes,General,Low
+need explanation of user roles,General,Low
+how to configure email alerts,General,Low
+requesting product brochure,General,Low
+
+please resolve asap,General,Low
+kindly check this issue,General,Low
+unable to proceed further,General,Low
+please do the needful,General,Low
+website down from morning,Technical,High
+account showing error,Account,Medium
+app not working properly,Technical,Medium
+
+Ticket,Category,Priority
+
+Payment deducted but unable to login,Payment|Authentication,High
+Unable to login after payment renewal,Authentication|Payment,High
+Payment completed but account locked,Payment|Account,High
+Refund requested but account inaccessible,Payment|Account,Medium
+Cannot verify account after successful payment,Authentication|Payment,High
+Payment failed due to authentication error,Payment|Authentication,High
+Subscription charged but login blocked,Payment|Authentication,High
+Authentication failed during payment approval,Authentication|Payment,High
+Payment pending and account suspended,Payment|Account,High
+Unable to access account after billing update,Account|Payment,Medium
+
+Application crashed during payment,Technical|Payment,High
+Payment page not loading,Technical|Payment,High
+Transaction failed because server unavailable,Technical|Payment,High
+Checkout process freezing repeatedly,Technical|Payment,Medium
+Payment completed but website crashed,Technical|Payment,High
+Invoice generation failed due to system error,Technical|Payment,Medium
+Billing section not opening,Technical|Payment,Medium
+Payment gateway timing out frequently,Technical|Payment,High
+Payment receipt missing because of application error,Technical|Payment,Medium
+Subscription renewal failed due to technical issue,Technical|Payment,High
+
+Profile update failed and account locked,Account|Authentication,High
+Unable to reset password because account suspended,Account|Authentication,High
+Authentication successful but account inaccessible,Authentication|Account,High
+Account verification pending and login blocked,Authentication|Account,Medium
+Cannot update profile after login verification,Authentication|Account,Medium
+User role issue preventing login,Authentication|Account,Medium
+Security verification failed and account disabled,Authentication|Account,High
+Account ownership transfer requires authentication,Authentication|Account,Medium
+Unable to recover account after verification attempt,Authentication|Account,Medium
+Password changed but account still locked,Authentication|Account,High
+
+Dashboard not loading after login,Authentication|Technical,Medium
+Login successful but application freezing,Authentication|Technical,High
+Authentication error causing website crash,Authentication|Technical,High
+Cannot access portal due to server issue,Authentication|Technical,High
+Verification process stuck because system error,Authentication|Technical,Medium
+OTP accepted but page remains blank,Authentication|Technical,Medium
+Authentication loop causing application hang,Authentication|Technical,High
+Security token validated but dashboard unavailable,Authentication|Technical,Medium
+Login session expiring due to technical issue,Authentication|Technical,Medium
+Unable to authenticate because service unavailable,Authentication|Technical,High
+
+Account settings not saving after payment,Account|Payment,Medium
+Billing details update failing in account settings,Account|Payment,Medium
+Account disabled after payment dispute,Account|Payment,High
+Unable to download invoice from account section,Account|Payment,Low
+Subscription active but account information incorrect,Account|Payment,Medium
+Refund processed to wrong account,Account|Payment,High
+Payment completed but profile still restricted,Account|Payment,Medium
+Account upgrade payment not reflected in profile,Account|Payment,Medium
+Unable to manage billing preferences,Account|Payment,Low
+Membership renewal not updating account status,Account|Payment,Medium
+
+Technical issue while updating account details,Technical|Account,Medium
+Profile page crashing repeatedly,Technical|Account,High
+Account information not loading due to server error,Technical|Account,High
+Unable to edit profile because application frozen,Technical|Account,Medium
+User settings page unavailable,Technical|Account,Medium
+Account recovery page not responding,Technical|Account,High
+Permission changes not saving because of system issue,Technical|Account,Medium
+Account dashboard displaying error message,Technical|Account,Medium
+Profile synchronization failing due to technical issue,Technical|Account,Medium
+Account administration panel not loading,Technical|Account,High
+
+Need help understanding payment charges and invoices,General|Payment,Low
+Question about refund policy and account status,General|Payment,Low
+Need guidance on subscription billing,General|Payment,Low
+Help required for payment history section,General|Payment,Low
+Question regarding invoice generation process,General|Payment,Low
+Need assistance with account verification process,General|Authentication,Low
+Question about login security features,General|Authentication,Low
+Need help understanding verification requirements,General|Authentication,Low
+How to resolve authentication problems,General|Authentication,Low
+Need guidance on password recovery options,General|Authentication,Low
+
+Need help with profile management,General|Account,Low
+Question regarding account permissions,General|Account,Low
+Need explanation of account roles,General|Account,Low
+Guidance required for account recovery process,General|Account,Low
+Question about account ownership transfer,General|Account,Low
+Need assistance with application errors,General|Technical,Low
+Question regarding system downtime,General|Technical,Low
+Need help understanding technical alerts,General|Technical,Low
+Guidance on troubleshooting application issues,General|Technical,Low
+Need information about service interruptions,General|Technical,Low
+
+Application crashed after payment and login attempt,Technical|Payment|Authentication,High
+Payment deducted and account locked simultaneously,Payment|Account|Authentication,High
+Unable to login after subscription payment due to system error,Authentication|Payment|Technical,High
+Profile update failed during payment verification,Account|Payment|Authentication,High
+Server error occurred while updating billing profile,Technical|Account|Payment,High
+
+payment done but account got locked,Payment|Authentication,High
+money deducted and login not working,Payment|Authentication,High
+amount debited but unable to access account,Payment|Authentication,High
+payment successful but account disabled,Payment|Authentication,High
+payment completed but cannot login now,Payment|Authentication,High
+subscription renewed but login showing error,Payment|Authentication,High
+money deducted and account blocked,Payment|Authentication,High
+payment done but authentication failed,Payment|Authentication,High
+amount deducted and otp verification failed,Payment|Authentication,High
+payment taken but account not opening,Payment|Authentication,High
+
+money debited but sign in not possible,Payment|Authentication,High
+payment successful but verification pending,Payment|Authentication,High
+renewal amount deducted but login denied,Payment|Authentication,High
+paid for subscription but account inaccessible,Payment|Authentication,High
+amount deducted but security check failed,Payment|Authentication,High
+payment processed but unable to verify account,Payment|Authentication,High
+money gone from account and login blocked,Payment|Authentication,High
+payment received but authentication issue showing,Payment|Authentication,High
+amount debited and account access denied,Payment|Authentication,High
+payment completed but otp not accepted,Payment|Authentication,High
+
+payment done still cannot access account,Payment|Authentication,High
+money deducted but verification code not working,Payment|Authentication,High
+subscription charged but unable to sign in,Payment|Authentication,High
+amount deducted and password reset not working,Payment|Authentication,High
+payment successful but account verification failed,Payment|Authentication,High
+paid amount but login page showing error,Payment|Authentication,High
+money deducted and account temporarily disabled,Payment|Authentication,High
+payment completed but getting authentication error,Payment|Authentication,High
+amount debited but login session expired,Payment|Authentication,High
+payment successful but account still locked,Payment|Authentication,High

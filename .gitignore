@@ -1,0 +1,23 @@
+# React
+node_modules/
+dist/
+
+# Python
+venv/
+__pycache__/
+*.pyc
+
+# Environment
+.env
+
+# VS Code
+.vscode/
+
+# Databases
+*.db
+
+# ML Models
+*.pkl
+
+# Exports
+*.xlsx
