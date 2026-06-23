@@ -55,7 +55,7 @@ function CustomerSignup() {
           );
 
           navigate(
-            "/customer-login"
+            "/"
           );
 
         } else {
@@ -185,7 +185,7 @@ return (
           >
             Login
           </button>
-
+          
         </div>
 
       </div>
@@ -195,5 +195,6 @@ return (
   </div>
 
 );}
+
 
 export default CustomerSignup;

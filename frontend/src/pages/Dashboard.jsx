@@ -1,44 +1,53 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import "../styles/dashboard.css";
+import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
 
   const [dashboard, setDashboard] = useState(null);
+ const navigate = useNavigate();
+ useEffect(() => {
 
-  useEffect(() => {
+  const username =
+    localStorage.getItem("username");
 
-    const username =
-  localStorage.getItem(
-    "username"
-  );
+  const role =
+    localStorage.getItem("role");
 
-const role =
-  localStorage.getItem(
-    "role"
-  );
+  const token =
+    localStorage.getItem("token");
 
-axios.get(
-  "http://127.0.0.1:5000/api/dashboard",
-  {
-    params: {
-      username,
-      role
+  axios.get(
+    "http://127.0.0.1:5000/api/dashboard",
+    {
+      params: {
+        username,
+        role
+      },
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
     }
-  }
-)
-      .then((response) => {
+  )
+  .then((response) => {
 
-        setDashboard(response.data);
+    setDashboard(
+      response.data
+    );
 
-      })
-      .catch((error) => {
+  })
+  .catch((error) => {
 
-        console.error(error);
+    console.error(
+      "Dashboard Error:",
+      error
+    );
 
-      });
+  });
 
-  }, []);
+}, []);
 const username =
   localStorage.getItem(
     "username"
@@ -54,7 +63,7 @@ const role =
 
   return (
 
-    <div className="container">
+    <div className="container dashboard-page">
 
       <div className="header">
 
@@ -115,16 +124,27 @@ const role =
 
 )}
 
-  <Link to="/">
+  <Link to="/customer-portal">
 
-    <button>
+    <button className="portal-btn">
       Customer Portal
     </button>
 
   </Link>
+ {role === "admin" && (
 
   <button
-    className="logout-btn"
+    className="analytics-btn"
+    onClick={() =>
+      navigate("/agent-analytics")
+    }
+  >
+    📈 Agent Analytics
+  </button>
+
+)}
+  <button
+    className="dashboard-logout-btn"
     onClick={() => {
 
       const confirmLogout =
@@ -233,7 +253,8 @@ const role =
     📊 Category Probabilities
   </h2>
 
-  {dashboard.results.map((item, index) => (
+  {dashboard.results &&
+  dashboard.results.map((item, index) => (
 
   <div
     key={index}
@@ -247,11 +268,11 @@ const role =
     <div className="progress-bar">
 
       <div
-        className="progress-fill"
-        style={{
-          width: `${item.percentage}%`
-        }}
-      />
+  className="progress-fill animate-fill"
+  style={{
+    width: `${item.percentage}%`
+  }}
+/>
 
     </div>
 
@@ -351,7 +372,19 @@ const role =
 
           <td>{ticket.confidence}%</td>
 
-          <td>{ticket.status}</td>
+         <td>
+
+  <span
+    className={`status-${ticket.status
+      .toLowerCase()
+      .replace("in progress", "progress")}`}
+  >
+
+    {ticket.status}
+
+  </span>
+
+</td>
 
           <td>
 

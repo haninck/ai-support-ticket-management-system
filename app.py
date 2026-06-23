@@ -8,8 +8,40 @@ from flask import Flask
 from flask_cors import CORS
 import pandas as pd
 from flask import send_file
-app = Flask(__name__)
+from datetime import timedelta
+from flask_jwt_extended import (
+    JWTManager,
+    create_access_token,
+    jwt_required,
+    get_jwt_identity
+     )
+from werkzeug.security import (
+    generate_password_hash,
+    check_password_hash
+)
 
+app = Flask(__name__)
+app.config["JWT_SECRET_KEY"] = (
+    "support-ticket-management-system-secret-key-2026"
+)
+app.config[
+    "JWT_ACCESS_TOKEN_EXPIRES"
+] = timedelta(hours=1)
+jwt = JWTManager(app)
+@jwt.expired_token_loader
+def expired_token_callback(
+    jwt_header,
+    jwt_payload
+):
+
+    return jsonify({
+
+        "success": False,
+
+        "message":
+        "Session expired. Please login again."
+
+    }), 401
 CORS(app)
 def get_db_connection():
 
@@ -226,6 +258,7 @@ def get_combined_guidance(
 
     return message
 @app.route("/api/tickets")
+@jwt_required()
 def api_tickets():
 
     conn = get_db_connection()
@@ -235,7 +268,11 @@ def api_tickets():
     )
 
     cursor.execute(
-        "SELECT * FROM tickets"
+        """
+        SELECT *
+        FROM tickets
+        ORDER BY id DESC
+        """
     )
 
     tickets = cursor.fetchall()
@@ -245,6 +282,7 @@ def api_tickets():
     return jsonify(tickets)
 
 @app.route("/api/ticket/<int:ticket_id>")
+@jwt_required()
 def api_ticket(ticket_id):
 
     conn = get_db_connection()
@@ -254,7 +292,11 @@ def api_ticket(ticket_id):
     )
 
     cursor.execute(
-        "SELECT * FROM tickets WHERE id=%s",
+        """
+        SELECT *
+        FROM tickets
+        WHERE id=%s
+        """,
         (ticket_id,)
     )
 
@@ -263,13 +305,47 @@ def api_ticket(ticket_id):
     conn.close()
 
     if ticket:
+
+        if (
+            ticket["assigned_at"] and
+            ticket["resolved_at"]
+        ):
+
+            diff = (
+                ticket["resolved_at"] -
+                ticket["assigned_at"]
+            )
+
+            hours = int(
+                diff.total_seconds() // 3600
+            )
+
+            minutes = int(
+                (
+                    diff.total_seconds() % 3600
+                ) // 60
+            )
+
+            ticket[
+                "resolution_time"
+            ] = (
+                f"{hours}h {minutes}m"
+            )
+
+        else:
+
+            ticket[
+                "resolution_time"
+            ] = "-"
+
         return jsonify(ticket)
 
-    return jsonify(
-        {"error": "Ticket not found"}
-    )
-
+    return jsonify({
+        "error":
+        "Ticket not found"
+    })
 @app.route("/api/update_note", methods=["POST"])
+@jwt_required()
 def api_update_note():
 
     data = request.json
@@ -296,7 +372,12 @@ def api_update_note():
     return jsonify({
         "message": "Note updated successfully"
     })
-@app.route("/api/update_status", methods=["POST"])
+from datetime import datetime
+
+@app.route(
+    "/api/update_status",
+    methods=["POST"]
+)
 def api_update_status():
 
     data = request.json
@@ -308,22 +389,50 @@ def api_update_status():
 
     cursor = conn.cursor()
 
-    cursor.execute(
-        """
-        UPDATE tickets
-        SET status = %s
-        WHERE id = %s
-        """,
-        (status, ticket_id)
-    )
+    if status == "Resolved":
+
+        cursor.execute(
+            """
+            UPDATE tickets
+            SET
+                status=%s,
+                resolved_at=%s
+            WHERE id=%s
+            """,
+            (
+                status,
+                datetime.now(),
+                ticket_id
+            )
+        )
+
+    else:
+
+        cursor.execute(
+            """
+            UPDATE tickets
+            SET
+                status=%s,
+                resolved_at=NULL
+            WHERE id=%s
+            """,
+            (
+                status,
+                ticket_id
+            )
+        )
 
     conn.commit()
+
     conn.close()
 
     return jsonify({
-        "message": "Status updated successfully"
+        "message":
+        "Status updated successfully"
     })
+
 @app.route("/api/dashboard")
+@jwt_required()
 def api_dashboard():
 
     username = request.args.get(
@@ -509,6 +618,7 @@ def api_dashboard():
 
     })
 @app.route("/api/submit_ticket", methods=["POST"])
+@jwt_required()
 def api_submit_ticket():
 
     from datetime import datetime
@@ -517,10 +627,7 @@ def api_submit_ticket():
 
     ticket = data["ticket"]
     
-    username = data.get(
-    "username",
-    None
-    )
+    username = get_jwt_identity()
 
     date_of_creation = datetime.now().strftime(
         "%d-%m-%Y %H:%M"
@@ -692,6 +799,7 @@ def api_submit_ticket():
 })
     
 @app.route("/api/check_status", methods=["POST"])
+@jwt_required()
 def api_check_status():
 
     data = request.get_json()
@@ -721,6 +829,7 @@ def api_check_status():
         "error": "Ticket not found"
     })
 @app.route("/api/add_to_dataset", methods=["POST"])
+@jwt_required()
 def api_add_to_dataset():
 
     data = request.get_json()
@@ -788,8 +897,55 @@ def api_add_to_dataset():
         "success": True,
         "ticket_id": ticket_id
     })
+    
+@app.route(
+    "/api/delete_selected",
+    methods=["POST"]
+)
+@jwt_required()
+def delete_selected():
 
+    data = request.get_json()
+
+    ticket_ids = data.get(
+        "ticket_ids",
+        []
+    )
+
+    if not ticket_ids:
+
+        return jsonify({
+            "success": False,
+            "message": "No tickets selected"
+        }), 400
+
+    conn = get_db_connection()
+
+    cursor = conn.cursor()
+
+    placeholders = ",".join(
+        ["%s"] * len(ticket_ids)
+    )
+
+    query = f"""
+    DELETE FROM tickets
+    WHERE id IN ({placeholders})
+    """
+
+    cursor.execute(
+        query,
+        ticket_ids
+    )
+
+    conn.commit()
+
+    conn.close()
+
+    return jsonify({
+        "success": True
+    })
 @app.route("/api/export_excel")
+@jwt_required()
 def export_excel():
 
     conn = get_db_connection()
@@ -817,45 +973,14 @@ def export_excel():
         file_name,
         as_attachment=True
     )
-@app.route(
-    "/api/delete_selected",
-    methods=["POST"]
+from werkzeug.security import (
+    check_password_hash
 )
-def delete_selected():
 
-    data = request.get_json()
-
-    ticket_ids = data["ticket_ids"]
-
-    conn = get_db_connection()
-
-    cursor = conn.cursor()
-
-    placeholders = ",".join(
-        ["%s"] * len(ticket_ids)
-    )
-
-    query = f"""
-    DELETE FROM tickets
-    WHERE id IN ({placeholders})
-    """
-
-    cursor.execute(
-        query,
-        ticket_ids
-    )
-
-    conn.commit()
-
-    conn.close()
-
-    return jsonify({
-        "success": True
-    })       
 @app.route(
     "/api/login",
     methods=["POST"]
-     )
+)
 def login():
 
     data = request.get_json()
@@ -884,24 +1009,63 @@ def login():
 
     if (
         user and
-        user["password"] == password
+        check_password_hash(
+            user["password"],
+            password
+        )
     ):
 
+        token = create_access_token(
+            identity=user["username"]
+        )
+
         return jsonify({
-       "success": True,
-       "username": user["username"],
-       "role": user["role"]
-    })
+            "success": True,
+            "username": user["username"],
+            "role": user["role"],
+            "token": token
+        })
 
     return jsonify({
         "success": False,
         "message": "Invalid credentials"
     })
+from datetime import datetime
+
 @app.route(
     "/api/assign_ticket",
     methods=["POST"]
 )
+@jwt_required()
 def assign_ticket():
+
+    username = get_jwt_identity()
+
+    conn = get_db_connection()
+
+    cursor = conn.cursor(
+        dictionary=True
+    )
+
+    cursor.execute(
+        """
+        SELECT *
+        FROM admin_users
+        WHERE username=%s
+        """,
+        (username,)
+    )
+
+    user = cursor.fetchone()
+
+    if not user or user["role"] != "admin":
+
+        conn.close()
+
+        return jsonify({
+            "success": False,
+            "message": "Unauthorized"
+        }), 403
 
     data = request.get_json()
 
@@ -909,18 +1073,19 @@ def assign_ticket():
 
     assigned_to = data["assigned_to"]
 
-    conn = get_db_connection()
-
     cursor = conn.cursor()
 
     cursor.execute(
         """
         UPDATE tickets
-        SET assigned_to=%s
+        SET
+            assigned_to=%s,
+            assigned_at=%s
         WHERE id=%s
         """,
         (
             assigned_to,
+            datetime.now(),
             ticket_id
         )
     )
@@ -931,7 +1096,7 @@ def assign_ticket():
 
     return jsonify({
         "success": True
-    })    
+    })
 @app.route("/api/agents")
 def get_agents():
 
@@ -958,7 +1123,10 @@ def customer_signup():
     data = request.get_json()
 
     username = data["username"]
-    password = data["password"]
+
+    password = generate_password_hash(
+        data["password"]
+    )
 
     conn = get_db_connection()
 
@@ -1011,6 +1179,7 @@ def customer_signup():
         "success": True
     })
 @app.route("/api/customer_tickets")
+@jwt_required()
 def customer_tickets():
 
     username = request.args.get(
@@ -1044,12 +1213,284 @@ def customer_tickets():
 
     conn.close()
 
-    return jsonify(tickets)    
+    return jsonify(tickets)   
+@app.route("/api/agent_analytics")
+@jwt_required()
+def agent_analytics():
+
+    conn = get_db_connection()
+
+    cursor = conn.cursor(
+        dictionary=True
+    )
+
+    cursor.execute(
+        """
+        SELECT
+            assigned_to,
+
+            COUNT(*) AS total_assigned,
+
+            SUM(
+                CASE
+                    WHEN status='Resolved'
+                    THEN 1
+                    ELSE 0
+                END
+            ) AS resolved_count,
+
+            SUM(
+                CASE
+                    WHEN status='Open'
+                    THEN 1
+                    ELSE 0
+                END
+            ) AS open_count,
+
+            SUM(
+                CASE
+                    WHEN status='In Progress'
+                    THEN 1
+                    ELSE 0
+                END
+            ) AS progress_count,
+
+            SUM(
+                CASE
+                    WHEN status='Closed'
+                    THEN 1
+                    ELSE 0
+                END
+            ) AS closed_count
+
+        FROM tickets
+
+        WHERE assigned_to IS NOT NULL
+        AND assigned_to <> ''
+
+        GROUP BY assigned_to
+
+        ORDER BY total_assigned DESC
+        """
+    )
+
+    analytics = cursor.fetchall()
+
+    for agent in analytics:
+
+        cursor.execute(
+            """
+            SELECT
+                assigned_at,
+                resolved_at
+            FROM tickets
+            WHERE assigned_to=%s
+            AND assigned_at IS NOT NULL
+            AND resolved_at IS NOT NULL
+            """,
+            (
+                agent["assigned_to"],
+            )
+        )
+
+        resolved_tickets = (
+            cursor.fetchall()
+        )
+
+        total_seconds = 0
+
+        count = 0
+
+        for ticket in resolved_tickets:
+
+            diff = (
+                ticket["resolved_at"]
+                -
+                ticket["assigned_at"]
+            )
+
+            total_seconds += (
+                diff.total_seconds()
+            )
+
+            count += 1
+
+        if count > 0:
+
+            avg_seconds = (
+                total_seconds
+                /
+                count
+            )
+
+            hours = int(
+                avg_seconds // 3600
+            )
+
+            minutes = int(
+                (
+                    avg_seconds % 3600
+                ) // 60
+            )
+
+            agent[
+                "avg_resolution_time"
+            ] = (
+                f"{hours}h {minutes}m"
+            )
+
+        else:
+
+            agent[
+                "avg_resolution_time"
+            ] = "-"
+
+    conn.close()
+
+    return jsonify(
+        analytics
+    )
+@app.route("/api/home_stats")
+def home_stats():
+
+    conn = get_db_connection()
+
+    cursor = conn.cursor(
+        dictionary=True
+    )
+
+    # Total Tickets
+    cursor.execute(
+        """
+        SELECT COUNT(*) AS count
+        FROM tickets
+        """
+    )
+
+    total_tickets = (
+        cursor.fetchone()["count"]
+    )
+
+    # Resolved Tickets
+    cursor.execute(
+        """
+        SELECT COUNT(*) AS count
+        FROM tickets
+        WHERE status='Resolved'
+        """
+    )
+
+    resolved_tickets = (
+        cursor.fetchone()["count"]
+    )
+
+    # Total Users
+    cursor.execute(
+        """
+        SELECT COUNT(*) AS count
+        FROM admin_users
+        """
+    )
+
+    total_users = (
+        cursor.fetchone()["count"]
+    )
+
+    # Total Agents
+    cursor.execute(
+        """
+        SELECT COUNT(*) AS count
+        FROM admin_users
+        WHERE role='agent'
+        """
+    )
+
+    total_agents = (
+        cursor.fetchone()["count"]
+    )
+
+    # Resolution Rate
+    resolution_rate = 0
+
+    if total_tickets > 0:
+
+        resolution_rate = round(
+            (
+                resolved_tickets /
+                total_tickets
+            ) * 100
+        )
+
+    # Average Resolution Time
+    cursor.execute(
+        """
+        SELECT
+            AVG(
+                TIMESTAMPDIFF(
+                    MINUTE,
+                    assigned_at,
+                    resolved_at
+                )
+            ) AS avg_minutes
+        FROM tickets
+        WHERE assigned_at IS NOT NULL
+        AND resolved_at IS NOT NULL
+        """
+    )
+
+    result = cursor.fetchone()
+
+    avg_minutes = result["avg_minutes"]
+
+    if avg_minutes is not None:
+
+        avg_minutes = int(
+            avg_minutes
+        )
+
+        hours = (
+            avg_minutes // 60
+        )
+
+        minutes = (
+            avg_minutes % 60
+        )
+
+        avg_resolution_time = (
+            f"{hours}h {minutes}m"
+        )
+
+    else:
+
+        avg_resolution_time = "-"
+
+    conn.close()
+
+    return jsonify({
+
+        "total_tickets":
+            total_tickets,
+
+        "resolved_tickets":
+            resolved_tickets,
+
+        "total_users":
+            total_users,
+
+        "total_agents":
+            total_agents,
+
+        "resolution_rate":
+            resolution_rate,
+
+        "avg_resolution_time":
+            avg_resolution_time
+
+    })
 if __name__ == "__main__":
     app.run(debug=True)
-#add a main user and a admin backend.
-#and resolving time for a ticket based on the category and priority and its time consumption.
-#and also a feature to assign the ticket to a support agent
+
+
 
 
 

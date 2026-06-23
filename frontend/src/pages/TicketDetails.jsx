@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import "../styles/ticket-details.css";
 function TicketDetails() {
 const navigate = useNavigate();
   const { id } = useParams();
@@ -10,12 +11,24 @@ const navigate = useNavigate();
   const [notes, setNotes] = useState("");
   const [assignedTo, setAssignedTo] = useState("");
 const [agents, setAgents] = useState([]);
+const role =
+  localStorage.getItem("role");
 
 
  useEffect(() => {
 
+  const token =
+    localStorage.getItem("token");
+
   axios
-    .get(`http://127.0.0.1:5000/api/ticket/${id}`)
+    .get(
+      `http://127.0.0.1:5000/api/ticket/${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    )
     .then((response) => {
 
       setTicket(response.data);
@@ -27,6 +40,11 @@ const [agents, setAgents] = useState([]);
       setAssignedTo(
         response.data.assigned_to || ""
       );
+
+    })
+    .catch((error) => {
+
+      console.error(error);
 
     });
 
@@ -65,12 +83,20 @@ const [agents, setAgents] = useState([]);
 
   const saveNotes = () => {
 
+  const token =
+    localStorage.getItem("token");
+
   axios
     .post(
       "http://127.0.0.1:5000/api/update_note",
       {
         ticket_id: ticket.id,
         note: notes
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       }
     )
     .then(() => {
@@ -88,16 +114,24 @@ const [agents, setAgents] = useState([]);
 
 const assignTicket = () => {
 
+  const token =
+    localStorage.getItem("token");
+
   axios.post(
     "http://127.0.0.1:5000/api/assign_ticket",
     {
       ticket_id: ticket.id,
       assigned_to: assignedTo
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
     }
   )
   .then(() => {
 
-    alert("Assignment saved");
+    alert("Ticket assigned successfully");
 
   })
   .catch((error) => {
@@ -110,7 +144,7 @@ const assignTicket = () => {
 
   return (
 
-    <div className="container">
+    <div className="container ticket-details-page">
 
       <div className="header">
 
@@ -128,93 +162,189 @@ const assignTicket = () => {
 
       <div className="note-card">
 
-        <h2>Ticket #{ticket.id}</h2>
+  <div className="ticket-header">
 
-        <p>
-          <strong>Created:</strong> {ticket.date_of_creation}
-        </p>
-        <p>
-           <strong>Created By:</strong>
-           {ticket.created_by || "Unknown"}
-        </p>
+    <h2>🎫 Ticket #{ticket.id}</h2>
 
-        <p>
-          <strong>Ticket:</strong> {ticket.ticket_text}
-        </p>
-
-        <p>
-          <strong>Category:</strong> {ticket.category}
-        </p>
-
-        <p>
-          <strong>Confidence:</strong> {ticket.confidence}%
-        </p>
-
-        <p>
-          <strong>Priority:</strong> {ticket.priority}
-        </p>
-
-        <p>
-          <strong>Status:</strong> {ticket.status}
-        </p>
-        <div className="assign-section">
-
-  <label>
-    👤 Assigned To
-  </label>
-
-  <select
-  className="status-dropdown"
-  value={assignedTo}
-  onChange={(e) => {
-
-    const selected =
-      e.target.value;
-
-    setAssignedTo(
-      selected
-    );
-
-    axios.post(
-      "http://127.0.0.1:5000/api/assign_ticket",
-      {
-        ticket_id: ticket.id,
-        assigned_to: selected
-      }
-    )
-    .then(() => {
-
-      console.log(
-        "Assignment saved"
-      );
-
-    })
-    .catch((error) => {
-
-      console.error(error);
-
-    });
-
-  }}
->
-
-  <option value="">
-    Unassigned
-  </option>
-
-  {agents.map((agent) => (
-
-    <option
-      key={agent.username}
-      value={agent.username}
+    <span
+      className={`status-badge status-${ticket.status
+        .toLowerCase()
+        .replace(" ", "-")}`}
     >
-      {agent.username}
-    </option>
+      {ticket.status}
+    </span>
 
-  ))}
+  </div>
 
-</select>
+  <div className="ticket-info-grid">
+
+    <div className="info-box">
+      <span className="info-label">
+        Created On
+      </span>
+
+      <span className="info-value">
+        {ticket.date_of_creation}
+      </span>
+    </div>
+
+    <div className="info-box">
+      <span className="info-label">
+        Created By
+      </span>
+
+      <span className="info-value">
+        {ticket.created_by || "Unknown"}
+      </span>
+    </div>
+
+    <div className="info-box">
+      <span className="info-label">
+        Category
+      </span>
+
+      <span className="info-value">
+        {ticket.category}
+      </span>
+    </div>
+
+    <div className="info-box">
+      <span className="info-label">
+        Confidence
+      </span>
+
+      <span className="info-value">
+        {ticket.confidence}%
+      </span>
+    </div>
+
+    <div className="info-box">
+      <span className="info-label">
+        Priority
+      </span>
+
+      <span className="info-value">
+        {ticket.priority}
+      </span>
+    </div>
+    <div className="detail-row">
+
+  <strong>
+    Assigned At:
+  </strong>
+
+  <span>
+    {ticket.assigned_at || "-"}
+  </span>
+
 </div>
+
+<div className="detail-row">
+
+  <strong>
+    Resolved At:
+  </strong>
+
+  <span>
+    {ticket.resolved_at || "-"}
+  </span>
+
+</div>
+
+<div className="detail-row">
+
+  <strong>
+    Resolution Time:
+  </strong>
+
+  <span>
+    {ticket.resolution_time}
+  </span>
+
+</div>
+
+  </div>
+
+  <div className="ticket-description">
+
+    <h3>Ticket Description</h3>
+
+    <p>
+      {ticket.ticket_text}
+    </p>
+
+  </div>
+
+{role === "admin" && (
+
+  <div className="assign-section">
+
+    <label>
+      Assign Agent
+    </label>
+
+    <select
+      value={assignedTo}
+      onChange={(e) => {
+
+        const selected =
+          e.target.value;
+
+        setAssignedTo(
+          selected
+        );
+
+        const token =
+          localStorage.getItem("token");
+
+        axios.post(
+          "http://127.0.0.1:5000/api/assign_ticket",
+          {
+            ticket_id: ticket.id,
+            assigned_to: selected
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
+        )
+        .then(() => {
+
+          console.log(
+            "Assignment saved"
+          );
+
+        })
+        .catch((error) => {
+
+          console.error(error);
+
+        });
+
+      }}
+    >
+
+      <option value="">
+        Unassigned
+      </option>
+
+      {agents.map((agent) => (
+
+        <option
+          key={agent.username}
+          value={agent.username}
+        >
+          {agent.username}
+        </option>
+
+      ))}
+
+    </select>
+
+  </div>
+
+)}
 </div>
       <div className="probability-card">
 

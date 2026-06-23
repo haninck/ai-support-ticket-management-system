@@ -50,6 +50,11 @@ function CustomerLogin() {
             response.data.role
           );
 
+          localStorage.setItem(
+            "token",
+            response.data.token
+          );
+
           navigate(
             "/customer-dashboard"
           );
@@ -63,11 +68,27 @@ function CustomerLogin() {
         }
 
       })
-      .catch(() => {
+      .catch((error) => {
 
-        setError(
-          "Unable to connect to server"
-        );
+        if (
+          error.response &&
+          error.response.status === 401
+        ) {
+
+          setError(
+            error.response.data.message ||
+            "Session expired. Please login again."
+          );
+
+          localStorage.clear();
+
+        } else {
+
+          setError(
+            "Unable to connect to server"
+          );
+
+        }
 
       });
 
@@ -77,11 +98,20 @@ function CustomerLogin() {
 
   <div className="customer-login-page">
 
+    <button
+      className="back-home-btn"
+      onClick={() =>
+        navigate("/landing")
+      }
+    >
+      ← Back to Home
+    </button>
+
     <div className="customer-login-card">
 
       <div className="customer-icon">
-  ⌬
-</div>
+        ⌬
+      </div>
 
       <h1 className="customer-title">
         Customer Portal
@@ -176,4 +206,5 @@ function CustomerLogin() {
   </div>
 
 );}
+
 export default CustomerLogin;

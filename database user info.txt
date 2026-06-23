@@ -1,0 +1,9 @@
+admin	admin123	admin
+hanin	hanin@123	agent
+lekshmic	lekshmi@123	
+navaneeth	nav123	agent
+arjun	arj123	agent
+marwan	mar123	agent
+aman	ama123	agent
+adithya	adhi123	customer
+amras	ama123	customer

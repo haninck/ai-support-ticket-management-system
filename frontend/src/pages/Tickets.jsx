@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import "../styles/tickets.css";
 function Tickets() {
   
   const [tickets, setTickets] = useState([]);
@@ -21,21 +22,34 @@ const role =
   );
   useEffect(() => {
 
-    axios
-      .get("http://127.0.0.1:5000/api/tickets")
-      .then((response) => {
+  const token =
+    localStorage.getItem("token");
 
-        console.log(response.data);
-        setTickets(response.data);
+  axios.get(
+    "http://127.0.0.1:5000/api/tickets",
+    {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }
+  )
+  .then((response) => {
 
-      })
-      .catch((error) => {
+    setTickets(
+      response.data
+    );
 
-        console.error("Error fetching tickets:", error);
+  })
+  .catch((error) => {
 
-      });
+    console.error(
+      "Error fetching tickets:",
+      error
+    );
 
-  }, []);
+  });
+
+}, []);
   const visibleTickets =
 
   role === "admin"
@@ -82,6 +96,12 @@ const role =
 
 (ticket.created_by || "")
   .toLowerCase()
+  .includes(search.toLowerCase())
+
+||
+
+(ticket.assigned_to || "")
+  .toLowerCase()
   .includes(search.toLowerCase());
 
   const matchesStatus =
@@ -95,11 +115,19 @@ const role =
 });
 const addToDataset = (ticketId) => {
 
+  const token =
+    localStorage.getItem("token");
+
   axios
     .post(
       "http://127.0.0.1:5000/api/add_to_dataset",
       {
         ticket_id: ticketId
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       }
     )
     .then(() => {
@@ -125,12 +153,20 @@ const addToDataset = (ticketId) => {
 };
 const updateStatus = (ticketId, newStatus) => {
 
+  const token =
+    localStorage.getItem("token");
+
   axios
     .post(
       "http://127.0.0.1:5000/api/update_status",
       {
         ticket_id: ticketId,
         status: newStatus
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       }
     )
     .then(() => {
@@ -138,7 +174,10 @@ const updateStatus = (ticketId, newStatus) => {
       setTickets((prevTickets) =>
         prevTickets.map((ticket) =>
           ticket.id === ticketId
-            ? { ...ticket, status: newStatus }
+            ? {
+                ...ticket,
+                status: newStatus
+              }
             : ticket
         )
       );
@@ -149,21 +188,32 @@ const updateStatus = (ticketId, newStatus) => {
       console.error(error);
 
     });
+
 };
 const deleteSelectedTickets = () => {
 
   if (selectedTickets.length === 0) {
 
-    alert("Please select tickets first");
+    alert(
+      "Please select tickets first"
+    );
 
     return;
   }
+
+  const token =
+    localStorage.getItem("token");
 
   axios
     .post(
       "http://127.0.0.1:5000/api/delete_selected",
       {
         ticket_ids: selectedTickets
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       }
     )
     .then(() => {
@@ -181,20 +231,70 @@ const deleteSelectedTickets = () => {
 
       setDeleteMode(false);
 
+      alert(
+        "Tickets deleted successfully"
+      );
+
+    })
+    .catch((error) => {
+
+      console.error(error);
+
+      alert(
+        "Failed to delete tickets"
+      );
+
     });
 
 };
 const exportExcel = () => {
 
-  window.open(
+  const token =
+    localStorage.getItem("token");
+
+  axios.get(
     "http://127.0.0.1:5000/api/export_excel",
-    "_blank"
-  );
+    {
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+      responseType: "blob"
+    }
+  )
+  .then((response) => {
+
+    const url =
+      window.URL.createObjectURL(
+        new Blob([response.data])
+      );
+
+    const link =
+      document.createElement("a");
+
+    link.href = url;
+
+    link.setAttribute(
+      "download",
+      "tickets.xlsx"
+    );
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    link.remove();
+
+  })
+  .catch((error) => {
+
+    console.error(error);
+
+  });
 
 };
   return (
 
-    <div className="container">
+    <div className="container tickets-page">
 
       <div className="result-card">
 
@@ -206,7 +306,7 @@ const exportExcel = () => {
   <input
     className="search-box"
     type="text"
-    placeholder="Search by ID, Category, Priority or Status or Username"
+    placeholder="Search by ID, Category, Priority, Status, Username or agent"
     value={search}
     onChange={(e) => setSearch(e.target.value)}
   />
@@ -217,35 +317,45 @@ const exportExcel = () => {
 <div className="filter-buttons">
 
   <button
-    className="filter-btn"
+    className={`filter-btn filter-all ${
+      statusFilter === "All" ? "is-active" : ""
+    }`}
     onClick={() => setStatusFilter("All")}
   >
     All
   </button>
 
   <button
-    className="filter-btn"
+    className={`filter-btn filter-open ${
+      statusFilter === "Open" ? "is-active" : ""
+    }`}
     onClick={() => setStatusFilter("Open")}
   >
     Open
   </button>
 
   <button
-    className="filter-btn"
+    className={`filter-btn filter-progress ${
+      statusFilter === "In Progress" ? "is-active" : ""
+    }`}
     onClick={() => setStatusFilter("In Progress")}
   >
     In Progress
   </button>
 
   <button
-    className="filter-btn"
+    className={`filter-btn filter-resolved ${
+      statusFilter === "Resolved" ? "is-active" : ""
+    }`}
     onClick={() => setStatusFilter("Resolved")}
   >
     Resolved
   </button>
 
   <button
-    className="filter-btn"
+    className={`filter-btn filter-closed ${
+      statusFilter === "Closed" ? "is-active" : ""
+    }`}
     onClick={() => setStatusFilter("Closed")}
   >
     Closed
@@ -279,7 +389,7 @@ const exportExcel = () => {
       </button>
 
       <button
-        className="filter-btn"
+        className="filter-btn cancel-btn"
         onClick={() => {
 
           setDeleteMode(false);
@@ -302,9 +412,17 @@ const exportExcel = () => {
   >
     Export Excel
   </button>
+<Link to="/dashboard">
 
+  <button className="dashboard-return-btn">
+    ⇐ Dashboard
+  </button>
+
+</Link>
 </div>
 <br />
+
+        <div className="tickets-table-wrap">
 
         <table className="ticket-table">
 
@@ -518,13 +636,7 @@ const exportExcel = () => {
 
 </table>
 
-<Link to="/dashboard">
-
-  <button className="log-btn">
-    ⇐ Dashboard
-  </button>
-
-</Link>
+</div>
 
 </div>
 

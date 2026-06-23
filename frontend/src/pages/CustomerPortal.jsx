@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import "../styles/customer-portal.css";
 
 function CustomerPortal() {
   const loggedIn =
@@ -49,105 +50,47 @@ const [secondaryResponse, setSecondaryResponse] =
 const [combinedGuidance,
   setCombinedGuidance] =
   useState("");
+ 
 
-  const submitTicket = () => {
+const submitTicket = () => {
 
-    axios
-      .post(
-        "http://127.0.0.1:5000/api/submit_ticket",
-        {
-          ticket: ticket
-        }
-      )
-      .then((response) => {
+  const token = localStorage.getItem("token");
 
-        setTicketId(
-          response.data.ticket_id
-        );
+  axios.post(
+    "http://127.0.0.1:5000/api/submit_ticket",
+    {
+      ticket: ticket
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }
+  )
+  .then((response) => {
 
-        setPrediction(
-          response.data.prediction
-        );
+    setTicketId(response.data.ticket_id);
+    setPrediction(response.data.prediction);
+    setConfidence(response.data.confidence);
+    setPriority(response.data.priority);
+    setResponse(response.data.response);
+    setPrimaryCategory(response.data.primary_category);
+    setPrimaryConfidence(response.data.primary_confidence);
+    setSecondaryCategory(response.data.secondary_category);
+    setSecondaryConfidence(response.data.secondary_confidence);
+    setSecondaryResponse(response.data.secondary_response);
+    setResults(response.data.results);
+    setCombinedGuidance(response.data.combined_guidance);
 
-        setConfidence(
-          response.data.confidence
-        );
+  })
+  .catch((error) => {
+    console.error(error);
+  });
 
-        setPriority(
-          response.data.priority
-        );
-
-        setResponse(
-          response.data.response
-        );
-        setPrimaryCategory(
-         response.data.primary_category
-        );
-
-        setPrimaryConfidence(
-          response.data.primary_confidence
-        );
-
-        setSecondaryCategory(
-          response.data.secondary_category
-        );
-
-        setSecondaryConfidence(
-          response.data.secondary_confidence
-        );
-
-        setSecondaryResponse(
-          response.data.secondary_response
-        );
-        setResults(
-          response.data.results
-        );
-
-        setCombinedGuidance(
-  response.data.combined_guidance
-);
-
-      })
-      .catch((error) => {
-
-        console.error(error);
-
-      });
-
-  };
-
-  const checkStatus = () => {
-
-      axios
-        .post(
-          "http://127.0.0.1:5000/api/submit_ticket",
-          {
-            ticket: ticket,
-
-            username:
-              localStorage.getItem(
-                "username"
-              )
-          }
-        )
-      .then((response) => {
-
-        setStatusResult(
-          response.data
-        );
-
-      })
-      .catch((error) => {
-
-        console.error(error);
-
-      });
-  
-  };
-
+};
   return (
 
-    <div className="container">
+    <div className="container customer-portal-page">
 
       <div className="header">
 
@@ -167,13 +110,13 @@ const [combinedGuidance,
 
     
 
-<div className="dashboard-actions">
+<div className="customer-portal-actions">
 
   {!loggedIn ? (
 
     <Link to="/login">
 
-      <button className="log-btn">
+      <button className="portal-nav-btn">
         🛡️ Admin Portal
       </button>
 
@@ -183,7 +126,7 @@ const [combinedGuidance,
 
     <Link to="/customer-dashboard">
 
-      <button className="log-btn">
+      <button className="portal-nav-btn">
         👤 My Dashboard
       </button>
 
@@ -193,7 +136,7 @@ const [combinedGuidance,
 
     <Link to="/dashboard">
 
-      <button className="log-btn">
+      <button className="portal-nav-btn">
         📊 Dashboard
       </button>
 
@@ -219,6 +162,7 @@ const [combinedGuidance,
         />
 
         <button
+          className="submit-ticket-btn"
           onClick={submitTicket}
         >
           🚀 Analyze & Submit Ticket
@@ -386,72 +330,12 @@ const [combinedGuidance,
 
       )}
 
-      <div className="note-card">
-
-        <h3>
-          🔍 Track Existing Ticket
-        </h3>
-
-        <input
-          type="number"
-          placeholder="Enter Ticket ID"
-          value={statusTicketId}
-          onChange={(e) =>
-            setStatusTicketId(
-              e.target.value
-            )
-          }
-        />
+      
 
         <br />
         <br />
-
-        <button
-          onClick={checkStatus}
-        >
-          Check Status
-        </button>
 
       </div>
-
-      {statusResult && (
-
-        <div className="result-card">
-
-          <h3>
-            📋 Ticket Status
-          </h3>
-
-          <p>
-            <strong>
-              Ticket ID:
-            </strong>
-            {" "}
-            {statusResult.id}
-          </p>
-
-          <p>
-            <strong>
-              Status:
-            </strong>
-            {" "}
-            {statusResult.status}
-          </p>
-
-          <p>
-            <strong>
-              Notes:
-            </strong>
-            {" "}
-            {statusResult.notes ||
-             "No notes available"}
-          </p>
-
-        </div>
-
-      )}
-
-    </div>
 
   );
 

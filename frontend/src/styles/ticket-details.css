@@ -1,0 +1,698 @@
+/* =========================================================================
+   TICKET DETAILS — DESIGN TOKENS
+   Same dark navy → indigo surface used across the dashboard, customer
+   portal and ticket history screens, so this page feels native to them.
+========================================================================= */
+
+:root {
+  --td-bg-glass: rgba(255, 255, 255, 0.03);
+  --td-bg-glass-strong: rgba(255, 255, 255, 0.05);
+  --td-border: rgba(255, 255, 255, 0.07);
+  --td-border-hover: rgba(255, 255, 255, 0.16);
+
+  --td-blue: #3b82f6;
+  --td-blue-light: #60a5fa;
+  --td-green: #10b981;
+  --td-green-light: #4ade80;
+  --td-amber: #f59e0b;
+  --td-amber-light: #fbbf24;
+  --td-gray: #64748b;
+  --td-gray-light: #cbd5e1;
+
+  --td-text-primary: #f8fafc;
+  --td-text-secondary: #cbd5e1;
+  --td-text-muted: #64748b;
+
+  --td-radius-lg: 18px;
+  --td-radius-md: 14px;
+  --td-radius-pill: 999px;
+
+  --td-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --td-fast: 0.2s;
+  --td-med: 0.45s;
+  --td-slow: 0.85s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* =========================================================================
+   KEYFRAMES — used deliberately, not scattered: one entrance rhythm for
+   the page, one shared "pop" for status/value chips, one shimmer for the
+   probability bars.
+========================================================================= */
+
+@keyframes td-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes td-fade-down {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes td-pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes td-grow-x {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes td-shimmer {
+  0% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(220%);
+  }
+}
+
+@keyframes td-pulse-dot {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 currentColor;
+    opacity: 1;
+  }
+  70% {
+    box-shadow: 0 0 0 5px transparent;
+    opacity: 0.6;
+  }
+}
+
+/* =========================================================================
+   PAGE / HEADER
+========================================================================= */
+
+.ticket-details-page {
+  max-width: 1100px;
+  margin: 30px auto;
+  padding: 30px;
+  animation: td-fade-up var(--td-med) var(--td-ease) both;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 28px;
+  animation: td-fade-down var(--td-med) var(--td-ease) both;
+}
+
+.header .logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 14px;
+  font-size: 26px;
+  border-radius: var(--td-radius-md);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.25), rgba(99, 102, 241, 0.18));
+  border: 1px solid var(--td-border-hover);
+  box-shadow: 0 10px 24px rgba(59, 130, 246, 0.18);
+  transition: transform var(--td-fast) var(--td-ease);
+}
+
+.header .logo:hover {
+  transform: translateY(-2px) rotate(-4deg);
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--td-text-primary);
+  letter-spacing: -0.01em;
+}
+
+.header .subtitle {
+  margin-top: 6px;
+  color: var(--td-text-muted);
+  font-size: 14px;
+}
+
+/* =========================================================================
+   LEGACY CARD STYLES (kept for backward compatibility with existing markup
+   that may still reference them) — polished in place, selectors unchanged.
+========================================================================= */
+
+.ticket-details-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  transition: box-shadow var(--td-med) var(--td-ease), transform var(--td-med) var(--td-ease);
+}
+
+.ticket-details-card h2 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 25px;
+}
+
+.ticket-details-card h3 {
+  margin-top: 28px;
+  margin-bottom: 14px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.ticket-info {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.ticket-info p {
+  margin: 0;
+  padding: 14px 18px;
+  background: #f8fafc;
+  border-radius: 12px;
+  color: #334155;
+  font-size: 14px;
+  transition: background var(--td-fast) var(--td-ease);
+}
+
+.ticket-info strong {
+  color: #0f172a;
+}
+
+/* =========================================================================
+   BUTTONS
+========================================================================= */
+
+.ticket-details-page button {
+  position: relative;
+  overflow: hidden;
+  height: 40px;
+  padding: 0 20px;
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform var(--td-fast) var(--td-ease),
+    box-shadow var(--td-med) var(--td-ease), background var(--td-med) var(--td-ease);
+}
+
+.ticket-details-page button::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.22), transparent);
+  transform: translateX(-120%);
+  transition: transform var(--td-slow) var(--td-ease);
+}
+
+.ticket-details-page button:hover {
+  transform: translateY(-2px);
+}
+
+.ticket-details-page button:hover::after {
+  transform: translateX(120%);
+}
+
+.ticket-details-page button:active {
+  transform: translateY(0) scale(0.97);
+}
+
+.ticket-details-page button:focus-visible {
+  outline: 2px solid var(--td-blue-light);
+  outline-offset: 2px;
+}
+
+/* Assign button (legacy) */
+.assign-btn {
+  background: linear-gradient(135deg, #1e293b, #3b82f6);
+  box-shadow: 0 8px 18px rgba(59, 130, 246, 0.16);
+}
+
+.assign-btn:hover {
+  background: linear-gradient(135deg, #334155, #60a5fa);
+  box-shadow: 0 12px 24px rgba(59, 130, 246, 0.22);
+}
+
+/* Save note button */
+.save-note-btn {
+  margin-top: 18px;
+  background: linear-gradient(135deg, #14532d, #059669);
+  box-shadow: 0 8px 18px rgba(16, 185, 129, 0.15);
+}
+
+.save-note-btn:hover {
+  background: linear-gradient(135deg, #166534, #10b981);
+  box-shadow: 0 12px 24px rgba(16, 185, 129, 0.22);
+}
+
+/* Back button */
+.back-btn {
+  margin-top: 18px;
+  background: linear-gradient(135deg, #334155, #64748b);
+  box-shadow: 0 8px 18px rgba(100, 116, 139, 0.14);
+}
+
+.back-btn:hover {
+  background: linear-gradient(135deg, #475569, #94a3b8);
+  box-shadow: 0 12px 24px rgba(100, 116, 139, 0.2);
+}
+
+/* the back button sits alone in the final wrapper div — give it room */
+.ticket-details-page > div:last-child {
+  display: flex;
+  justify-content: flex-start;
+  animation: td-fade-up var(--td-med) var(--td-ease) both;
+  animation-delay: 0.3s;
+}
+
+/* =========================================================================
+   NOTES TEXTAREA (legacy selector kept + the one actually rendered today)
+========================================================================= */
+
+.ticket-note-box,
+.notes-textarea {
+  width: 100%;
+  min-height: 140px;
+  padding: 16px;
+  border-radius: var(--td-radius-md);
+  border: 1px solid var(--td-border);
+  background: var(--td-bg-glass);
+  color: var(--td-text-secondary);
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+  transition: border-color var(--td-fast) var(--td-ease), box-shadow var(--td-fast) var(--td-ease),
+    background var(--td-fast) var(--td-ease);
+}
+
+.ticket-note-box::placeholder,
+.notes-textarea::placeholder {
+  color: var(--td-text-muted);
+}
+
+.ticket-note-box:focus,
+.notes-textarea:focus {
+  outline: none;
+  border-color: var(--td-blue);
+  background: var(--td-bg-glass-strong);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18);
+}
+
+/* =========================================================================
+   ASSIGN SECTION
+========================================================================= */
+
+.assign-section {
+  margin-top: 24px;
+  padding-top: 22px;
+  border-top: 1px solid var(--td-border);
+  animation: td-fade-up var(--td-med) var(--td-ease) both;
+}
+
+.assign-section label {
+  display: block;
+  margin-bottom: 10px;
+  color: var(--td-text-muted);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.assign-section select {
+  min-width: 220px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--td-border);
+  background: var(--td-bg-glass);
+  color: var(--td-text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color var(--td-fast) var(--td-ease), box-shadow var(--td-fast) var(--td-ease),
+    transform var(--td-fast) var(--td-ease);
+}
+
+.assign-section select:hover {
+  border-color: var(--td-blue-light);
+}
+
+.assign-section select:focus {
+  outline: none;
+  border-color: var(--td-blue);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18);
+}
+
+/* =========================================================================
+   STATUS BADGE — legacy light-mode values (kept; superseded visually by
+   the dark-mode rules further down, later in the cascade)
+========================================================================= */
+
+.status-badge {
+  display: inline-block;
+  padding: 8px 16px;
+  border-radius: var(--td-radius-pill);
+  font-size: 13px;
+  font-weight: 700;
+  transition: transform var(--td-fast) var(--td-ease);
+}
+
+.status-open {
+  background: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+}
+
+.status-progress {
+  background: rgba(59, 130, 246, 0.15);
+  color: #3b82f6;
+}
+
+.status-resolved {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+}
+
+.status-closed {
+  background: rgba(148, 163, 184, 0.15);
+  color: #64748b;
+}
+
+/* =========================================================================
+   MOBILE
+========================================================================= */
+
+@media (max-width: 768px) {
+  .ticket-info {
+    grid-template-columns: 1fr;
+  }
+
+  .ticket-details-page {
+    padding: 16px;
+  }
+
+  .ticket-details-card {
+    padding: 20px;
+  }
+
+  .ticket-info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .assign-section select {
+    width: 100%;
+  }
+}
+
+/* =========================================================================
+   TICKET HEADER (id + live status)
+========================================================================= */
+
+.ticket-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+.ticket-header h2 {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+/* =========================================================================
+   INFO GRID (created on / by, category, confidence, priority)
+========================================================================= */
+
+.ticket-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 30px;
+}
+
+.info-box {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  padding: 18px;
+  transition: border-color var(--td-fast) var(--td-ease), transform var(--td-fast) var(--td-ease),
+    background var(--td-fast) var(--td-ease);
+  animation: td-fade-up var(--td-med) var(--td-ease) both;
+}
+
+.info-box:hover {
+  border-color: var(--td-border-hover);
+  background: var(--td-bg-glass-strong);
+  transform: translateY(-2px);
+}
+
+.ticket-info-grid .info-box:nth-child(1) { animation-delay: 0.05s; }
+.ticket-info-grid .info-box:nth-child(2) { animation-delay: 0.1s; }
+.ticket-info-grid .info-box:nth-child(3) { animation-delay: 0.15s; }
+.ticket-info-grid .info-box:nth-child(4) { animation-delay: 0.2s; }
+.ticket-info-grid .info-box:nth-child(5) { animation-delay: 0.25s; }
+
+.info-label {
+  display: block;
+  color: #64748b;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+.info-value {
+  color: #f8fafc;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* =========================================================================
+   DESCRIPTION
+========================================================================= */
+
+.ticket-description {
+  margin-bottom: 30px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 16px;
+  padding: 22px;
+  animation: td-fade-up var(--td-med) var(--td-ease) both;
+  animation-delay: 0.1s;
+}
+
+.ticket-description h3 {
+  margin-top: 0;
+  color: #60a5fa;
+  margin-bottom: 12px;
+}
+
+.ticket-description p {
+  color: #e2e8f0;
+  line-height: 1.7;
+}
+
+/* =========================================================================
+   STATUS BADGE — live dark-mode treatment, with an animated status dot
+   and a gentle pop-in so a freshly loaded ticket feels alive.
+========================================================================= */
+
+.status-badge {
+  padding: 10px 18px;
+  border-radius: var(--td-radius-pill);
+  font-size: 13px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  animation: td-pop-in var(--td-fast) var(--td-ease) both;
+  animation-delay: 0.15s;
+}
+
+.status-badge::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: td-pulse-dot 1.8s var(--td-ease) infinite;
+}
+
+.status-open {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+}
+
+.status-in-progress {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+}
+
+.status-resolved {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+}
+
+.status-closed {
+  background: rgba(148, 163, 184, 0.15);
+  color: #cbd5e1;
+}
+
+.status-closed::before,
+.status-resolved::before {
+  animation: none;
+} /* finished states don't need a "live" pulse */
+
+/* =========================================================================
+   NOTE CARDS — the ticket-summary card and the support-notes card both
+   use this class; styled once, animated once, used twice.
+========================================================================= */
+
+.note-card {
+  background: var(--td-bg-glass);
+  border: 1px solid var(--td-border);
+  border-radius: var(--td-radius-lg);
+  padding: 28px;
+  margin-bottom: 22px;
+  backdrop-filter: blur(6px);
+  animation: td-fade-up var(--td-med) var(--td-ease) both;
+  transition: border-color var(--td-med) var(--td-ease);
+}
+
+.note-card:hover {
+  border-color: var(--td-border-hover);
+}
+
+.note-card h3 {
+  margin: 0 0 16px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--td-text-primary);
+}
+
+/* stagger the page's three main cards as one orchestrated entrance */
+.note-card:nth-of-type(1) { animation-delay: 0.05s; }
+.probability-card { animation-delay: 0.15s; }
+.note-card:nth-of-type(2) { animation-delay: 0.25s; }
+
+/* =========================================================================
+   CATEGORY PROBABILITIES
+========================================================================= */
+
+.probability-card {
+  background: var(--td-bg-glass);
+  border: 1px solid var(--td-border);
+  border-radius: var(--td-radius-lg);
+  padding: 28px;
+  margin-bottom: 22px;
+  animation: td-fade-up var(--td-med) var(--td-ease) both;
+}
+
+.probability-card h2 {
+  margin: 0 0 20px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--td-text-primary);
+}
+
+.probability-row {
+  display: grid;
+  grid-template-columns: 130px 1fr 64px;
+  align-items: center;
+  gap: 14px;
+  padding: 9px 0;
+  opacity: 0;
+  animation: td-fade-up var(--td-fast) var(--td-ease) both;
+}
+
+.probability-row:nth-child(1) { animation-delay: 0.3s; }
+.probability-row:nth-child(2) { animation-delay: 0.38s; }
+.probability-row:nth-child(3) { animation-delay: 0.46s; }
+.probability-row:nth-child(4) { animation-delay: 0.54s; }
+.probability-row:nth-child(5) { animation-delay: 0.62s; }
+.probability-row:nth-child(n + 6) { animation-delay: 0.7s; }
+
+.probability-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--td-text-secondary);
+}
+
+.progress-bar {
+  position: relative;
+  height: 10px;
+  border-radius: var(--td-radius-pill);
+  background: rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+}
+
+.progress-fill {
+  position: relative;
+  height: 100%;
+  border-radius: var(--td-radius-pill);
+  background: linear-gradient(90deg, var(--td-blue), var(--td-blue-light));
+  transform-origin: left center;
+  transform: scaleX(0);
+  animation: td-grow-x 0.9s var(--td-ease) both;
+  animation-delay: 0.5s;
+  transition: width 0.6s var(--td-ease);
+  overflow: hidden;
+}
+
+.progress-fill::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 50%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+  animation: td-shimmer 2.2s ease-in-out infinite;
+  animation-delay: 1.2s;
+}
+
+.probability-value {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--td-text-primary);
+  text-align: right;
+}
+
+@media (max-width: 600px) {
+  .probability-row {
+    grid-template-columns: 90px 1fr 50px;
+    gap: 10px;
+  }
+}

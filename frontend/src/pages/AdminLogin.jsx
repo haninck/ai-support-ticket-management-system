@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import "../styles/admin-login.css";
 
 
 function AdminLogin() {
@@ -33,21 +34,28 @@ function AdminLogin() {
         if (response.data.success) {
 
           localStorage.setItem(
-  "loggedIn",
-  "true"
-);
+            "loggedIn",
+            "true"
+          );
 
-localStorage.setItem(
-  "username",
-  response.data.username
-);
+          localStorage.setItem(
+            "username",
+            response.data.username
+          );
 
-localStorage.setItem(
-  "role",
-  response.data.role
-);
+          localStorage.setItem(
+            "role",
+            response.data.role
+          );
 
-          navigate("/dashboard");
+          localStorage.setItem(
+            "token",
+            response.data.token
+          );
+
+          navigate(
+            "/dashboard"
+          );
 
         } else {
 
@@ -58,11 +66,27 @@ localStorage.setItem(
         }
 
       })
-      .catch(() => {
+      .catch((error) => {
 
-        setError(
-          "Unable to connect to server"
-        );
+        if (
+          error.response &&
+          error.response.status === 401
+        ) {
+
+          setError(
+            error.response.data.message ||
+            "Session expired. Please login again."
+          );
+
+          localStorage.clear();
+
+        } else {
+
+          setError(
+            "Unable to connect to server"
+          );
+
+        }
 
       });
 
@@ -71,6 +95,14 @@ localStorage.setItem(
   return (
 
     <div className="admin-login-page">
+       <button
+      className="back-home-btn"
+      onClick={() =>
+        navigate("/landing")
+      }
+    >
+      ← Back to Home
+    </button>
 
       <div className="admin-login-card">
 
@@ -154,5 +186,6 @@ localStorage.setItem(
   );
 
 }
+
 
 export default AdminLogin;

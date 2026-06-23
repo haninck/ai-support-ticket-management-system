@@ -424,3 +424,6 @@ money deducted and account temporarily disabled,Payment|Authentication,High
 payment completed but getting authentication error,Payment|Authentication,High
 amount debited but login session expired,Payment|Authentication,High
 payment successful but account still locked,Payment|Authentication,High
+website crash,Technical,High
+i cant access my account and cant continue my login ,Account,Low
+i cant enter my account,Account,Low

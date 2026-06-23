@@ -1,0 +1,376 @@
+@import url("https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap");
+
+/* =========================================================================
+   PAGE BASE — same navy/violet glow + glass tokens as the customer
+   dashboard. Layout (max-width/centering) is left to .container, this
+   only sets theme: background, type, colour.
+   ========================================================================= */
+.customer-portal-page {
+  --surface: rgba(15, 23, 42, 0.8);
+  --surface-soft: rgba(255, 255, 255, 0.05);
+  --border: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(59, 130, 246, 0.25);
+
+  --text: #f8fafc;
+  --text-body: #cbd5e1;
+  --text-muted: #94a3b8;
+  --text-subtle: #64748b;
+  --accent: #60a5fa;
+
+  --primary: #2563eb;
+  --primary-2: #4f46e5;
+  --primary-glow: rgba(59, 130, 246, 0.3);
+
+  --font-display: "Sora", "Segoe UI", sans-serif;
+  --font-body: "Inter", "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  --radius: 18px;
+  --radius-sm: 12px;
+
+  min-height: 100vh;
+  padding: 30px clamp(16px, 4vw, 56px) 64px;
+  background:
+    radial-gradient(circle at top left, #1e3a8a 0%, transparent 35%),
+    radial-gradient(circle at bottom right, #7c3aed 0%, transparent 35%),
+    linear-gradient(135deg, #020617, #0f172a, #111827);
+  font-family: var(--font-body);
+  color: var(--text-body);
+  box-sizing: border-box;
+}
+
+.customer-portal-page * {
+  box-sizing: border-box;
+}
+
+.customer-portal-page strong {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* =========================================================================
+   HEADER — centred hero, fades down on load like the dashboard header
+   ========================================================================= */
+.customer-portal-page .header {
+  text-align: center;
+  max-width: 640px;
+  margin: 0 auto 28px;
+  animation: portalFadeDown 0.5s ease both;
+}
+
+.customer-portal-page .logo {
+  font-size: 2.75rem;
+  margin-bottom: 6px;
+  animation: portalFloat 3s ease-in-out infinite;
+}
+
+.customer-portal-page .header h1 {
+  margin: 0 0 6px;
+  font-family: var(--font-display);
+  font-size: clamp(24px, 3vw, 32px);
+  font-weight: 700;
+  color: var(--text);
+}
+
+.customer-portal-page .subtitle {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 15px;
+}
+
+/* =========================================================================
+   ACTIONS ROW
+   ========================================================================= */
+.customer-portal-actions {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 640px;
+  margin: 0 auto 32px;
+  animation: portalFadeDown 0.5s ease both;
+  animation-delay: 80ms;
+}
+
+/* =========================================================================
+   BUTTONS — recoloured to the customer dashboard's palette: the primary
+   blue gradient for the one main call to action, a quiet glass style
+   (borrowed from the login page's secondary button) for everything else.
+   ========================================================================= */
+.customer-portal-page button {
+  height: 40px;
+  padding: 0 20px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-body);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.customer-portal-page button:hover {
+  transform: translateY(-2px);
+}
+
+.customer-portal-page button:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.customer-portal-page button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Secondary / navigational actions — translucent glass pill */
+.customer-portal-page .portal-nav-btn,
+.customer-portal-page .check-status-btn {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+  color: var(--text-body);
+}
+
+.customer-portal-page .portal-nav-btn:hover,
+.customer-portal-page .check-status-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+}
+
+/* Primary call to action — same blue gradient as "Submit New Ticket"
+   on the customer dashboard */
+.customer-portal-page .submit-ticket-btn {
+  height: 42px;
+  margin-top: 18px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-2));
+  border: none;
+  color: white;
+  box-shadow: 0 8px 18px rgba(59, 130, 246, 0.25);
+}
+
+.customer-portal-page .submit-ticket-btn:hover {
+  background: linear-gradient(135deg, var(--primary), var(--primary-2));
+  box-shadow: 0 12px 24px var(--primary-glow);
+}
+
+/* =========================================================================
+   CARDS — note / result / response / probability all share the same
+   glass-card treatment as the dashboard's ticket cards
+   ========================================================================= */
+.customer-portal-page .note-card,
+.customer-portal-page .result-card,
+.customer-portal-page .response-card,
+.customer-portal-page .probability-card {
+  background: var(--surface);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25), 0 0 20px rgba(59, 130, 246, 0.05);
+  animation: portalFadeUp 0.4s ease both;
+}
+
+.customer-portal-page .note-card h3,
+.customer-portal-page .result-card h3,
+.customer-portal-page .response-card h3,
+.customer-portal-page .probability-card h2 {
+  margin: 0 0 16px;
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.customer-portal-page .note-card p,
+.customer-portal-page .result-card p,
+.customer-portal-page .response-card p {
+  margin: 8px 0;
+  color: var(--text-body);
+  font-size: 14.5px;
+  line-height: 1.6;
+}
+
+/* =========================================================================
+   TEXTAREA / INPUT — same translucent input treatment as the login form
+   ========================================================================= */
+.customer-portal-page .notes-textarea,
+.customer-portal-page input {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.customer-portal-page .notes-textarea {
+  min-height: 120px;
+  resize: vertical;
+  margin-bottom: 4px;
+}
+
+.customer-portal-page .notes-textarea::placeholder,
+.customer-portal-page input::placeholder {
+  color: var(--text-subtle);
+}
+
+.customer-portal-page .notes-textarea:focus,
+.customer-portal-page input:focus {
+  border-color: #3b82f6;
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+/* =========================================================================
+   PROBABILITY BREAKDOWN
+   ========================================================================= */
+.customer-portal-page .probability-row {
+  display: grid;
+  grid-template-columns: 140px 1fr 48px;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 0;
+  animation: portalFadeUp 0.4s ease both;
+}
+
+.customer-portal-page .probability-row:nth-child(1) { animation-delay: 0.05s; }
+.customer-portal-page .probability-row:nth-child(2) { animation-delay: 0.1s; }
+.customer-portal-page .probability-row:nth-child(3) { animation-delay: 0.15s; }
+.customer-portal-page .probability-row:nth-child(4) { animation-delay: 0.2s; }
+.customer-portal-page .probability-row:nth-child(5) { animation-delay: 0.25s; }
+.customer-portal-page .probability-row:nth-child(n+6) { animation-delay: 0.3s; }
+
+.customer-portal-page .probability-label {
+  font-size: 13.5px;
+  color: var(--text-body);
+}
+
+.customer-portal-page .progress-bar {
+  height: 10px;
+  border-radius: 999px;
+  background: var(--surface-soft);
+  overflow: hidden;
+}
+
+.customer-portal-page .progress-fill {
+
+  position: relative;
+
+  height: 100%;
+
+  border-radius: 999px;
+
+  background:
+    linear-gradient(
+      90deg,
+      var(--accent),
+      var(--primary)
+    );
+
+  transform-origin:
+    left center;
+
+  animation:
+    portalGrow 1.2s ease forwards;
+
+}
+.customer-portal-page .progress-fill::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.35) 50%,
+    transparent 70%
+  );
+  background-size: 200% 100%;
+  animation: portalShimmer 1.4s ease-in-out infinite;
+}
+
+.customer-portal-page .probability-value {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--accent);
+  text-align: right;
+}
+
+/* =========================================================================
+   ANIMATIONS — same curves as the customer dashboard
+   ========================================================================= */
+@keyframes portalFadeDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes portalFadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes portalGrow {
+
+  from {
+
+    transform:
+      scaleX(0);
+
+  }
+
+  to {
+
+    transform:
+      scaleX(1);
+
+  }
+
+}
+
+@keyframes portalShimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@keyframes portalFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .customer-portal-page .header,
+  .customer-portal-actions,
+  .customer-portal-page .logo,
+  .customer-portal-page .note-card,
+  .customer-portal-page .result-card,
+  .customer-portal-page .response-card,
+  .customer-portal-page .probability-card,
+  .customer-portal-page .probability-row,
+  .customer-portal-page .progress-fill,
+  .customer-portal-page .progress-fill::after {
+    animation: none !important;
+  }
+
+  .customer-portal-page button {
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* =========================================================================
+   RESPONSIVE
+   ========================================================================= */
+@media (max-width: 600px) {
+  .customer-portal-page {
+    padding: 20px;
+  }
+
+  .customer-portal-page .probability-row {
+    grid-template-columns: 100px 1fr 40px;
+  }
+}

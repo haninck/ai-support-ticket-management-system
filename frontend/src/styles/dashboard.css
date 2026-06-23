@@ -1,0 +1,614 @@
+@import url("https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap");
+
+/* =========================================================================
+   PAGE BASE — same navy/violet glow background, same glass tokens, same
+   type stack as the customer dashboard. If .dashboard-page already has a
+   background/padding rule in another stylesheet, merge that with this
+   block so the two don't fight.
+   ========================================================================= */
+.dashboard-page {
+  --surface: rgba(15, 23, 42, 0.8);
+  --surface-soft: rgba(255, 255, 255, 0.04);
+  --border: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(59, 130, 246, 0.25);
+
+  --text: #f8fafc;
+  --text-body: #cbd5e1;
+  --text-muted: #94a3b8;
+  --text-subtle: #64748b;
+  --accent: #60a5fa;
+
+  --primary: #2563eb;
+  --primary-2: #4f46e5;
+  --primary-glow: rgba(59, 130, 246, 0.3);
+
+  --danger: #dc2626;
+  --danger-2: #991b1b;
+
+  --font-display: "Sora", "Segoe UI", sans-serif;
+  --font-body: "Inter", "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  --radius: 18px;
+  --radius-sm: 12px;
+
+  min-height: 100vh;
+  padding: 30px clamp(16px, 4vw, 56px) 64px;
+  background:
+    radial-gradient(circle at top left, #1e3a8a 0%, transparent 35%),
+    radial-gradient(circle at bottom right, #7c3aed 0%, transparent 35%),
+    linear-gradient(135deg, #020617, #0f172a, #111827);
+  font-family: var(--font-body);
+  color: var(--text-body);
+  box-sizing: border-box;
+}
+
+.dashboard-page * {
+  box-sizing: border-box;
+}
+
+/* =========================================================================
+   BUTTONS — scoped to .dashboard-page (unchanged colours, same font now)
+   ========================================================================= */
+.dashboard-page button {
+  height: 40px;
+  padding: 0 20px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, #334155, #475569);
+  color: white;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.dashboard-page button:hover {
+  transform: translateY(-2px);
+}
+
+.dashboard-page button:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.dashboard-page button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.dashboard-page .log-btn {
+  background: linear-gradient(135deg, #1e293b, #3b82f6);
+  box-shadow: 0 8px 18px rgba(59, 130, 246, 0.16);
+}
+
+.dashboard-page .log-btn:hover {
+  background: linear-gradient(135deg, #334155, #60a5fa);
+  box-shadow: 0 12px 24px rgba(59, 130, 246, 0.22);
+}
+
+.dashboard-page .portal-btn {
+  background: linear-gradient(135deg, #14532d, #059669);
+  box-shadow: 0 8px 18px rgba(16, 185, 129, 0.15);
+}
+
+.dashboard-page .portal-btn:hover {
+  background: linear-gradient(135deg, #166534, #10b981);
+  box-shadow: 0 12px 24px rgba(16, 185, 129, 0.22);
+}
+
+.dashboard-page .dashboard-logout-btn {
+  min-height: 42px;
+  padding: 0 18px;
+  background: linear-gradient(135deg, #7f1d1d, #dc2626);
+  box-shadow: 0 8px 18px rgba(239, 68, 68, 0.16);
+}
+
+.dashboard-page .dashboard-logout-btn:hover {
+  background: linear-gradient(135deg, #991b1b, #ef4444);
+  box-shadow: 0 12px 24px rgba(239, 68, 68, 0.24);
+}
+
+.dashboard-page .note-btn {
+  height: 42px;
+  padding: 0 16px;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, #3730a3, #6366f1);
+  box-shadow: 0 8px 18px rgba(99, 102, 241, 0.16);
+}
+
+.dashboard-page .note-btn:hover {
+  background: linear-gradient(135deg, #4338ca, #818cf8);
+  box-shadow: 0 12px 24px rgba(99, 102, 241, 0.22);
+}
+
+/* =========================================================================
+   STATS GRID — now built as glass cards (rgba surface + blur) like the
+   ticket cards on the customer dashboard, with the same restrained
+   fadeUp entrance and the same lift-on-hover (no scale/border tricks).
+   ========================================================================= */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: var(--surface);
+  backdrop-filter: blur(16px);
+  padding: 18px 20px;
+  min-height: 110px;
+  border-radius: var(--radius);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-left: 4px solid transparent;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25), 0 0 20px rgba(59, 130, 246, 0.05);
+  transition: transform 0.3s ease, border-color 0.3s ease;
+  animation: dashFadeUp 0.45s ease both;
+}
+
+.stat-card:nth-child(2) { animation-delay: 60ms; }
+.stat-card:nth-child(3) { animation-delay: 120ms; }
+.stat-card:nth-child(4) { animation-delay: 180ms; }
+.stat-card:nth-child(5) { animation-delay: 240ms; }
+
+.stat-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--border-hover);
+}
+
+.stat-card h3 {
+  font-family: var(--font-body);
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  opacity: 0.9;
+}
+
+.stat-card p {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 800;
+  margin: 0;
+  line-height: 1;
+}
+
+/* TOTAL */
+.stat-card:first-child {
+  background: rgba(59, 130, 246, 0.08);
+  border-left-color: #3b82f6;
+}
+.stat-card:first-child h3,
+.stat-card:first-child p {
+  color: #93c5fd;
+}
+
+/* OPEN */
+.open-card {
+  background: rgba(217, 119, 6, 0.08);
+  border-left-color: #d97706;
+}
+.open-card h3,
+.open-card p {
+  color: #facc15;
+}
+
+/* IN PROGRESS */
+.progress-card {
+  background: rgba(59, 130, 246, 0.08);
+  border-left-color: #3b82f6;
+}
+.progress-card h3,
+.progress-card p {
+  color: #93c5fd;
+}
+
+/* RESOLVED */
+.resolved-card {
+  background: rgba(34, 197, 94, 0.08);
+  border-left-color: #16a34a;
+}
+.resolved-card h3,
+.resolved-card p {
+  color: #86efac;
+}
+
+/* CLOSED */
+.closed-card {
+  background: rgba(148, 163, 184, 0.08);
+  border-left-color: #94a3b8;
+}
+.closed-card h3,
+.closed-card p {
+  color: #cbd5e1;
+}
+
+/* =========================================================================
+   PREDICTION BADGE — same breathing pulse cadence as the status dots
+   below (1.6s ease-in-out), just on the badge's glow instead of opacity
+   so the confidence text stays legible.
+   ========================================================================= */
+.prediction-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(96, 165, 250, 0.2);
+  color: #93c5fd;
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 700;
+  animation: dashBadgeGlow 1.6s ease-in-out infinite;
+}
+
+.confidence-text {
+  color: #93c5fd;
+  font-weight: 700;
+}
+
+/* =========================================================================
+   TABLE CONTAINER — glass card, matching the stat cards above
+   ========================================================================= */
+.table-card {
+  background: var(--surface);
+  backdrop-filter: blur(16px);
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25), 0 0 20px rgba(59, 130, 246, 0.05);
+}
+
+/* =========================================================================
+   TABLE
+   ========================================================================= */
+.ticket-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-family: var(--font-body);
+}
+
+.progress-fill {
+  position: relative;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #60a5fa, #3b82f6);
+  overflow: hidden;
+}
+
+/* moving highlight across the fill, same shimmer cadence as a loading
+   skeleton would use */
+.progress-fill::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.35) 50%,
+    transparent 70%
+  );
+  background-size: 200% 100%;
+  animation: dashShimmer 1.4s ease-in-out infinite;
+}
+
+
+
+/* =========================================================================
+   TABLE HEADERS — nested surface, lighter than the glass card it sits in
+   ========================================================================= */
+.ticket-table th {
+  background: var(--surface-soft);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 12px;
+  font-weight: 700;
+  height: 64px;
+  vertical-align: middle;
+  text-align: left;
+  padding: 0 18px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* =========================================================================
+   TABLE ROWS — same vertical fadeUp as the stat cards, not a slide
+   ========================================================================= */
+.ticket-table tbody tr {
+  transition: background 0.2s ease;
+  animation: dashFadeUp 0.4s ease both;
+}
+
+.ticket-table tbody tr:nth-child(1) { animation-delay: 0.05s; }
+.ticket-table tbody tr:nth-child(2) { animation-delay: 0.1s; }
+.ticket-table tbody tr:nth-child(3) { animation-delay: 0.15s; }
+.ticket-table tbody tr:nth-child(4) { animation-delay: 0.2s; }
+.ticket-table tbody tr:nth-child(5) { animation-delay: 0.25s; }
+.ticket-table tbody tr:nth-child(6) { animation-delay: 0.3s; }
+.ticket-table tbody tr:nth-child(7) { animation-delay: 0.35s; }
+.ticket-table tbody tr:nth-child(8) { animation-delay: 0.4s; }
+.ticket-table tbody tr:nth-child(9) { animation-delay: 0.45s; }
+.ticket-table tbody tr:nth-child(n+10) { animation-delay: 0.5s; }
+
+.ticket-table tbody tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.015);
+}
+
+.ticket-table tbody tr:hover {
+  background: rgba(59, 130, 246, 0.08);
+}
+
+/* Assumes the first column is the ticket ID — same treatment as the
+   monospace ticket-id label on the customer dashboard. Drop this rule
+   if column 1 isn't the ID. */
+.ticket-table td:first-child {
+  font-family: var(--font-mono);
+  color: var(--text-subtle);
+}
+
+/* =========================================================================
+   TABLE CELLS
+   ========================================================================= */
+.ticket-table td {
+  padding: 22px 18px;
+  color: #f1f5f9;
+  font-size: 15px;
+  vertical-align: middle;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+/* =========================================================================
+   STATUS BADGES — resized to the compact pill from the customer
+   dashboard (4px/10px padding, 600 weight) with the same pulsing dot.
+   ========================================================================= */
+.status-open,
+.status-progress,
+.status-resolved,
+.status-closed {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.status-open {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+}
+
+.status-progress {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+}
+
+.status-resolved {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+}
+
+.status-closed {
+  background: rgba(148, 163, 184, 0.15);
+  color: #cbd5e1;
+}
+
+.status-open::before,
+.status-progress::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: dashPulse 1.6s ease-in-out infinite;
+}
+
+/* =========================================================================
+   BUTTONS — unscoped variants
+   ========================================================================= */
+.action-btn {
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 14px 24px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px var(--primary-glow);
+}
+
+.action-btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.action-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* =========================================================================
+   SEARCH BAR — same translucent input treatment as the login form
+   ========================================================================= */
+.search-box {
+  width: 100%;
+  max-width: 420px;
+  padding: 14px 18px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  font-family: var(--font-body);
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.search-box::placeholder {
+  color: var(--text-subtle);
+}
+
+.search-box:focus {
+  border-color: #3b82f6;
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+/* =========================================================================
+   TOP ACTION BUTTONS
+   ========================================================================= */
+.top-action-btn {
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 14px 28px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 700;
+  color: white;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.top-action-btn:hover {
+  transform: translateY(-2px);
+}
+
+.top-action-btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.top-action-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.customer-btn {
+  background: linear-gradient(135deg, #059669, #10b981);
+}
+
+.customer-btn:hover {
+  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.35);
+}
+
+.logout-btn {
+  background: linear-gradient(135deg, #dc2626, #ef4444);
+}
+
+.logout-btn:hover {
+  box-shadow: 0 10px 25px rgba(239, 68, 68, 0.35);
+}
+
+/* =========================================================================
+   ANIMATIONS — same curves/timings as the customer dashboard
+   ========================================================================= */
+@keyframes dashFadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes dashGrow {
+
+  from {
+
+    transform:
+      scaleX(0);
+
+  }
+
+  to {
+
+    transform:
+      scaleX(1);
+
+  }
+
+}
+@keyframes dashShimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@keyframes dashPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+
+@keyframes dashBadgeGlow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.25); }
+  50% { box-shadow: 0 0 0 6px rgba(59, 130, 246, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stat-card,
+  .ticket-table tbody tr,
+  .prediction-badge,
+  .progress-fill::after,
+  .status-open::before,
+  .status-progress::before {
+    animation: none !important;
+  }
+
+  .dashboard-page button,
+  .action-btn,
+  .top-action-btn,
+  .stat-card {
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* =========================================================================
+   RESPONSIVE
+   ========================================================================= */
+@media (max-width: 1200px) {
+  .ticket-table {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 1100px) {
+  .stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-page {
+    padding: 20px;
+  }
+
+  .table-card {
+    overflow-x: auto;
+  }
+
+  .ticket-table {
+    min-width: 900px;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+}
